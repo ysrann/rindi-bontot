@@ -1,0 +1,44 @@
+const images = [
+  "🍎", "🍌", "🍇", "🍓", "🍒", "🍉", "🍍", "🥝"
+];
+
+let cards = [...images, ...images]; // 2 pasang
+cards = cards.sort(() => 0.5 - Math.random()); // acak kartu
+
+const gameBoard = document.getElementById("gameBoard");
+let flippedCards = [];
+let matched = 0;
+
+// Buat kartu
+cards.forEach((icon, index) => {
+  const card = document.createElement("div");
+  card.classList.add("card");
+  card.dataset.icon = icon;
+  card.innerHTML = `<img src="https://twemoji.maxcdn.com/v/latest/72x72/${icon.codePointAt(0).toString(16)}.png" alt="">`;
+  card.addEventListener("click", () => flipCard(card));
+  gameBoard.appendChild(card);
+});
+
+function flipCard(card) {
+  if (card.classList.contains("flipped") || flippedCards.length === 2) return;
+
+  card.classList.add("flipped");
+  flippedCards.push(card);
+
+  if (flippedCards.length === 2) {
+    const [first, second] = flippedCards;
+    if (first.dataset.icon === second.dataset.icon) {
+      matched += 1;
+      flippedCards = [];
+      if (matched === images.length) {
+        setTimeout(() => alert("Selamat! Semua gambar cocok!"), 300);
+      }
+    } else {
+      setTimeout(() => {
+        first.classList.remove("flipped");
+        second.classList.remove("flipped");
+        flippedCards = [];
+      }, 1000);
+    }
+  }
+}
